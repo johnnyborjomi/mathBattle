@@ -14,17 +14,30 @@ const reqHandler = (req, res) => {
             res.end(fs.readFileSync('app/script.js'));
             break;
         case '/ping':
-            serveInterval(res);
+            serverInterval(res);
             break;
     }
 
 };
 
-function serveInterval(res) {
-    setInterval(()=>{
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end('pong');
-    }, 5000)
+function hasResponse() {
+    return !Math.floor(Math.random()*2)
+}
+
+function serverInterval(res) {
+    let responseState = hasResponse();
+    if(responseState){
+        setTimeout(()=>{
+            res.writeHead(200, {'Content-Type': 'text/plain'});
+            res.end('pong');
+        }, 1000);
+    }else {
+        setTimeout(()=>{
+            res.writeHead(404, 'server error lol', {'Content-Type': 'text/plain'});
+            res.end(res.statusText);
+        },1000)
+    }
+    console.log(responseState);
 }
 
 const server = http.createServer(reqHandler);
