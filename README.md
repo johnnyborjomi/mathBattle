@@ -1,2 +1,2 @@
 # mathBattle
-https://johnnyborjomi.github.io/mathBattle/
+https://johnnyborjomi.github.io/mathBattle/dist/
