@@ -7,11 +7,11 @@ const reqHandler = (req, res) => {
     switch (req.url){
         case '/':
             res.writeHead(200, {'Content-Type': 'text/html; charset=utf8'});
-            res.end(fs.readFileSync('app/index.html'));
+            res.end(fs.readFileSync('index.html'));
             break;
-        case '/script.js':
+        case 'app/app.js':
             res.writeHead(200, {'Content-Type': 'text/javascript'});
-            res.end(fs.readFileSync('app/script.js'));
+            res.end(fs.readFileSync('app/app.js'));
             break;
         case '/ping':
             serverInterval(res);
