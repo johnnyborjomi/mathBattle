@@ -1,13 +1,15 @@
 body {
-  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
   font-family: Noteworthy;
-  background: gainsboro;
+  background: gainsboro; }
+
+.game-field {
+  overflow-x: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin: 0;
-  padding: 0;
   width: 100vw;
   height: 100vh; }
 
@@ -41,9 +43,9 @@ h1 {
     background: crimson; }
     .buttons .wrong:active {
       transform: scale(0.95); }
-  .buttons .correct {
+  .buttons .correct, .buttons .start {
     background: forestgreen; }
-    .buttons .correct:active {
+    .buttons .correct:active, .buttons .start:active {
       transform: scale(0.95); }
 
 .timeline {
@@ -67,29 +69,7 @@ h1 {
 .score-text, .score {
   font-size: 25px; }
 
-.in-start.in-result .buttons, .in-result .buttons {
-  transform: translate(95px, 0); }
+.hidden {
+  display: none; }
 
-.in-start.in-result h1, .in-result h1 {
-  font-size: 100px; }
-
-.in-start.in-result .timeline, .in-start.in-result .wrong, .in-start.in-result .formula, .in-start.in-result .score-text, .in-result .timeline, .in-result .wrong, .in-result .formula, .in-result .score-text {
-  visibility: hidden; }
-
-.in-result .score-text {
-  visibility: visible; }
-
-.in-result h1 {
-  font-size: 0; }
-
-.in-game .timeline, .in-game .formula, .in-game .score {
-  visibility: visible; }
-
-.in-game h1 {
-  font-size: 0; }
-
-.in-game .correct {
-  font-size: 0; }
-  .in-game .correct:after {
-    font-size: 30px;
-    content: 'yes'; }
+/*# sourceMappingURL=styles.css.map*/

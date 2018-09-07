@@ -3,7 +3,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
-    entry: './src/index.ts',
+    entry: './src/index.tsx',
     output: {
         // path: path.resolve(__dirname, './dist'),
         filename: "app.js",
@@ -11,8 +11,8 @@ const config = {
     },
     devServer: {
         port: 3000
-    }
-    ,
+    },
+    devtool: "source-map",
     module: {
         rules: [
             {
@@ -20,13 +20,14 @@ const config = {
                 use: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
             },
             {
-                test: /\.ts$/,
-                use: 'ts-loader'
-            }
+                test: /\.tsx$/,
+                use: 'awesome-typescript-loader'
+            },
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     },
     resolve: {
-        extensions: [".tsx", ".ts", ".js"]
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".json"]
     },
     plugins: [
         new ExtractTextPlugin("styles.css"),
@@ -35,7 +36,6 @@ const config = {
             title: "Mathbattle"
         })
     ]
-
 
 };
 
