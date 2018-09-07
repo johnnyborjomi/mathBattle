@@ -28,7 +28,7 @@ h1 {
     height: 150px;
     border-radius: 50%;
     border: none;
-    margin: 30px 5px;
+    margin: 30px 20px;
     outline: none;
     opacity: .8;
     font-size: 30px;
@@ -62,7 +62,34 @@ h1 {
     top: 0;
     background: limegreen;
     border-radius: inherit;
-    transition: width 300ms ease-in-out; }
+    transition: all 100ms ease-in-out; }
 
 .score-text, .score {
   font-size: 25px; }
+
+.in-start.in-result .buttons, .in-result .buttons {
+  transform: translate(95px, 0); }
+
+.in-start.in-result h1, .in-result h1 {
+  font-size: 100px; }
+
+.in-start.in-result .timeline, .in-start.in-result .wrong, .in-start.in-result .formula, .in-start.in-result .score-text, .in-result .timeline, .in-result .wrong, .in-result .formula, .in-result .score-text {
+  visibility: hidden; }
+
+.in-result .score-text {
+  visibility: visible; }
+
+.in-result h1 {
+  font-size: 0; }
+
+.in-game .timeline, .in-game .formula, .in-game .score {
+  visibility: visible; }
+
+.in-game h1 {
+  font-size: 0; }
+
+.in-game .correct {
+  font-size: 0; }
+  .in-game .correct:after {
+    font-size: 30px;
+    content: 'yes'; }
