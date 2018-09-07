@@ -1,7 +1,10 @@
 import {random, sample} from 'lodash';
 
 
-class Task {
+export class Task {
+
+    taskState: boolean;
+    formula: string;
     
     constructor (formula, taskState){
         this.formula = formula;

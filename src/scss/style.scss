@@ -1,14 +1,15 @@
 body {
-  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
   font-family: Noteworthy;
   background: gainsboro;
-
+}
+.game-field {
+  overflow-x: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin: 0;
-  padding: 0;
   width: 100vw;
   height: 100vh;
 }
@@ -23,6 +24,7 @@ h1 {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
+
   * {
     display: inline-block;
     width: 150px;
@@ -46,12 +48,13 @@ h1 {
       transform: scale(.95);
     }
   }
-  .correct {
+  .correct, .start {
     background: forestgreen;
     &:active {
       transform: scale(.95);
     }
   }
+
 }
 .timeline {
   width: 80vw;
@@ -78,39 +81,6 @@ h1 {
 
 }
 
-.in-start.in-result, .in-result {
-  .buttons {
-    transform: translate(95px , 0);
-  }
-  h1 {
-    font-size: 100px;
-  }
-  .timeline, .wrong, .formula, .score-text {
-    visibility: hidden;
-  }
-}
-
-.in-result {
-  .score-text {
-    visibility: visible;
-  }
-  h1 {
-    font-size: 0;
-  }
-}
-
-.in-game {
-  .timeline, .formula, .score{
-    visibility: visible;
-  }
-  h1{
-    font-size: 0;
-  }
-  .correct {
-    font-size: 0;
-    &:after {
-      font-size: 30px;
-      content: 'yes';
-    }
-  }
+.hidden {
+  display: none;
 }

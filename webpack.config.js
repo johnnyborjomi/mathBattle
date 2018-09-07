@@ -3,7 +3,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
-    entry: './src/index.js',
+    entry: './src/index.ts',
     output: {
         // path: path.resolve(__dirname, './dist'),
         filename: "app.js",
@@ -18,8 +18,15 @@ const config = {
             {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
+            },
+            {
+                test: /\.ts$/,
+                use: 'ts-loader'
             }
         ]
+    },
+    resolve: {
+        extensions: [".tsx", ".ts", ".js"]
     },
     plugins: [
         new ExtractTextPlugin("styles.css"),
