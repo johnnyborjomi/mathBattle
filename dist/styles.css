@@ -6,6 +6,8 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  margin: 0;
+  padding: 0;
   width: 100vw;
   height: 100vh; }
 
@@ -16,29 +18,36 @@ h1 {
 .formula {
   font-size: 60px; }
 
-.buttons * {
-  display: inline-block;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  border: none;
-  margin: 30px;
-  outline: none;
-  opacity: .8;
-  font-size: 30px;
-  color: white; }
-  .buttons *:hover {
-    cursor: pointer;
-    opacity: 1; }
-
-.buttons .wrong {
-  background: crimson; }
-
-.buttons .correct {
-  background: forestgreen; }
+.buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between; }
+  .buttons * {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: none;
+    margin: 30px 5px;
+    outline: none;
+    opacity: .8;
+    font-size: 30px;
+    color: white;
+    transition: all 100ms ease-in-out; }
+    .buttons *:hover {
+      cursor: pointer;
+      opacity: 1; }
+  .buttons .wrong {
+    background: crimson; }
+    .buttons .wrong:active {
+      transform: scale(0.95); }
+  .buttons .correct {
+    background: forestgreen; }
+    .buttons .correct:active {
+      transform: scale(0.95); }
 
 .timeline {
-  width: 70vw;
+  width: 80vw;
   height: 20px;
   background: black;
   position: relative;
@@ -54,3 +63,6 @@ h1 {
     background: limegreen;
     border-radius: inherit;
     transition: width 300ms ease-in-out; }
+
+.score-text, .score {
+  font-size: 25px; }
