@@ -20,8 +20,8 @@ const config = {
                 use: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
             },
             {
-                test: /\.tsx$/,
-                use: 'awesome-typescript-loader'
+                test: /\.tsx?$/,
+                use: 'ts-loader'
             },
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
