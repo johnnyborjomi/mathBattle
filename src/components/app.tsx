@@ -1,57 +1,94 @@
-import {throttle} from 'lodash';
+import { throttle } from "lodash";
 
-import Game from './game'
+import Game from "./game";
 
 import * as React from "react";
 
+import { Task } from "./task-generator";
+import { ProgressBar } from "./progress-bar";
 
+export class App extends React.Component {
+  game: Game;
 
-export const a = function (){
-const startScreen = document.querySelector('.in-start');
-const gameScreen = document.querySelector('.in-game');
-const formula = document.querySelector('.formula');
-const correct = document.querySelector('.correct');
-const wrong = document.querySelector('.wrong');
-const timeline : HTMLElement = document.querySelector('.timeline .line');
-const scoreCurrent : HTMLElement = gameScreen.querySelector('.score');
-const scoreFinal : HTMLElement = startScreen.querySelector('.score');
-const startButton = document.querySelector('.start');
+  state: {
+    score: number;
+    timeLeft: number;
+    task: Task;
+    inGame: boolean;
+  };
 
+  constructor(props) {
+    super(props);
 
+    this.game = new Game(
+      this.toggleScreen.bind(this),
+      this.updateContent.bind(this)
+    );
+    const { timeLeft, score, task } = this.game;
+    this.state = { timeLeft, score, task, inGame: false };
 
-function toggleScreen(arg) {
-    startScreen.classList.toggle('hidden', arg);
-    gameScreen.classList.toggle('hidden', !arg);
-}
+    document.addEventListener("keyup", e => {
+      if (e.key === "ArrowRight") {
+        this.game.checkTask(false);
+      }
+      if (e.key === "ArrowLeft") {
+        this.game.checkTask(true);
+      }
+    });
+  }
 
-function updateContent({timeLeft, score, task}: Game) {
+  toggleScreen(inGame) {
+    this.setState({ inGame });
+  }
 
-    timeline.style.width = timeLeft + "%";
-    scoreFinal.textContent = score.toString();
-    scoreCurrent.textContent = score.toString();
-    formula.textContent = task.formula;
-}
+  updateContent(game: Game) {
+    const { timeLeft, score, task } = game;
+    this.setState({ timeLeft, score, task });
+  }
 
+  render() {
+    if (this.state.inGame) {
+      return (
+        <div className="game-field in-game">
+          <div className="score-text">
+            Score: <span className="score">{this.state.score}</span>
+          </div>
+          <div className="formula">{this.state.task.formula}</div>
 
-let game = new Game(toggleScreen, updateContent);
+          <ProgressBar value={this.state.timeLeft} />
+          <ProgressBar value={this.state.timeLeft} />
+          <ProgressBar value={this.state.timeLeft} />
 
-document.addEventListener('keyup', (e)=>{
-    if(e.key  === "ArrowRight"){
-        game.checkTask(false);
+          <div className="buttons">
+            <button
+              className="correct"
+              onClick={() => this.game.checkTask(true)}
+            >
+              yes
+            </button>
+            <button
+              className="wrong"
+              onClick={() => this.game.checkTask(false)}
+            >
+              no
+            </button>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="game-field in-start">
+          <div className="score-text">
+            Score: <span className="score">{this.state.score}</span>
+          </div>
+          <h1>Math Battle!</h1>
+          <div className="buttons buttons--start">
+            <button className="start" onClick={() => this.game.start()}>
+              start
+            </button>
+          </div>
+        </div>
+      );
     }
-    if(e.key === "ArrowLeft"){
-        game.checkTask(true);
-    }
-});
-
-correct.addEventListener('click', () => game.checkTask(true));
-
-wrong.addEventListener('click', () => game.checkTask(false));
-
-startButton.addEventListener('click', () => game.start());
-
-console.log(2);
-
+  }
 }
-
-console.log(1);
