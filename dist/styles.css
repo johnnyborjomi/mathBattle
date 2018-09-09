@@ -40,7 +40,7 @@ h1 {
     font-size: 30px;
     color: white;
     transition: all 100ms ease-in-out;
-    font-family: font; }
+    font-family: Gamija, "Gamja Flower", cursive, Arial, Helvetica, sans-serif; }
     .buttons *:hover {
       cursor: pointer;
       opacity: 1; }
