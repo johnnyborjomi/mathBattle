@@ -56,8 +56,6 @@ export class App extends React.Component {
           <div className="formula">{this.state.task.formula}</div>
 
           <ProgressBar value={this.state.timeLeft} />
-          <ProgressBar value={this.state.timeLeft} />
-          <ProgressBar value={this.state.timeLeft} />
 
           <div className="buttons">
             <button
