@@ -1,14 +1,15 @@
-
-
 @font-face {
   font-family: Gamija;
   src: url("/assets/GamjaFlower-Regular.ttf");
 }
 
+$font-backup: "Gamja Flower", cursive;
+$font: Gamija, $font-backup, Arial, Helvetica, sans-serif;
+
 body {
   margin: 0;
   padding: 0;
-  font-family: Gamija;
+  font-family: $font;
   background: gainsboro;
 }
 .game-field {
@@ -44,7 +45,7 @@ h1 {
     font-size: 30px;
     color: white;
     transition: all 100ms ease-in-out;
-    font-family: Gamija;
+    font-family: font;
     &:hover {
       cursor: pointer;
       opacity: 1;
