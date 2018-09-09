@@ -1,7 +1,11 @@
+@font-face {
+  font-family: Gamija;
+  src: url("/assets/GamjaFlower-Regular.ttf"); }
+
 body {
   margin: 0;
   padding: 0;
-  font-family: Noteworthy;
+  font-family: Gamija;
   background: gainsboro; }
 
 .game-field {
@@ -32,10 +36,11 @@ h1 {
     border: none;
     margin: 30px 20px;
     outline: none;
-    opacity: .8;
+    opacity: 0.8;
     font-size: 30px;
     color: white;
-    transition: all 100ms ease-in-out; }
+    transition: all 100ms ease-in-out;
+    font-family: Gamija; }
     .buttons *:hover {
       cursor: pointer;
       opacity: 1; }
@@ -43,9 +48,11 @@ h1 {
     background: crimson; }
     .buttons .wrong:active {
       transform: scale(0.95); }
-  .buttons .correct, .buttons .start {
+  .buttons .correct,
+  .buttons .start {
     background: forestgreen; }
-    .buttons .correct:active, .buttons .start:active {
+    .buttons .correct:active,
+    .buttons .start:active {
       transform: scale(0.95); }
 
 .timeline {
@@ -66,7 +73,8 @@ h1 {
     border-radius: inherit;
     transition: all 100ms ease-in-out; }
 
-.score-text, .score {
+.score-text,
+.score {
   font-size: 25px; }
 
 .hidden {
