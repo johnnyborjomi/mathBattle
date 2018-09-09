@@ -5,7 +5,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: Gamija;
+  font-family: Gamija, "Gamja Flower", cursive, Arial, Helvetica, sans-serif;
   background: gainsboro; }
 
 .game-field {
@@ -40,7 +40,7 @@ h1 {
     font-size: 30px;
     color: white;
     transition: all 100ms ease-in-out;
-    font-family: Gamija; }
+    font-family: font; }
     .buttons *:hover {
       cursor: pointer;
       opacity: 1; }
