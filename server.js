@@ -1,6 +1,6 @@
 const http = require("http");
 const fs = require("fs");
-const port = 3000;
+const port = process.env.PORT || 3000;
 const express = require("express");
 
 const app = express();
@@ -8,7 +8,7 @@ const app = express();
 app.use(express.static("dist"));
 
 app.get("/", (req, res) => {
-  app.send("run");
+  res.send("run");
 });
 
 app.listen(port, () => console.log(`App running on port:${port}`));
