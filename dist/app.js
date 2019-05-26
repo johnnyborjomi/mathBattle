@@ -38264,14 +38264,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _game_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game-view */ "./src/components/game-view.tsx");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 
 
 class App extends react__WEBPACK_IMPORTED_MODULE_1__["Component"] {
@@ -38286,28 +38278,23 @@ class App extends react__WEBPACK_IMPORTED_MODULE_1__["Component"] {
         this.passInput = document.querySelector("#pass");
     }
     signIn(e) {
-        this.checkUser().then(result => {
-            console.log(result);
-            if (result !== undefined) {
-                this.setState({ isLoggedIn: true });
-            }
-        });
+        this.checkUser();
         e.preventDefault();
     }
     checkUser() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield function () {
-                let users = fetch("/users");
-                return users
-                    .then(data => data.json())
-                    .then(data => {
-                    return data.find(user => {
-                        console.log(this.nameInput.value);
-                        return (user.name === this.nameInput.value &&
-                            user.pass === this.passInput.value);
-                    });
-                });
-            };
+        let users = fetch("/users");
+        users
+            .then(data => data.json())
+            .then(data => {
+            console.log(this.nameInput.value);
+            let user = data.find(user => {
+                return (user.name === this.nameInput.value &&
+                    user.pass === this.passInput.value);
+            });
+            if (user) {
+                console.log(user);
+                this.setState({ isLoggedIn: true });
+            }
         });
     }
     render() {

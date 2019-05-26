@@ -29,31 +29,27 @@ export class App extends React.Component {
   }
 
   signIn(e) {
-    this.checkUser().then(result => {
-      console.log(result);
-      if (result !== undefined) {
-        this.setState({ isLoggedIn: true });
-      }
-    });
+    this.checkUser();
     e.preventDefault();
   }
 
-  async checkUser() {
-    await function() {
-      let users = fetch("/users");
-
-      return users
-        .then(data => data.json())
-        .then(data => {
-          console.log(this.nameInput.value);
-          return data.find(user => {
-            return (
-              user.name === this.nameInput.value &&
-              user.pass === this.passInput.value
-            );
-          });
+  checkUser() {
+    let users = fetch("/users");
+    users
+      .then(data => data.json())
+      .then(data => {
+        console.log(this.nameInput.value);
+        let user = data.find(user => {
+          return (
+            user.name === this.nameInput.value &&
+            user.pass === this.passInput.value
+          );
         });
-    };
+        if (user) {
+          console.log(user);
+          this.setState({ isLoggedIn: true });
+        }
+      });
   }
 
   render() {
