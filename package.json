@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "webpack-dev-server --mode development --open",
     "build": "webpack --mode production",
-    "release": "npm version minor && npm run build "
+    "release": "npm version minor && npm run build ",
+    "server": "webpack --mode development && node server.js"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "express": "^4.17.0",
     "lodash": "^4.17.10",
     "react": "^16.5.0",
-    "react-dom": "^16.5.0"
+    "react-dom": "^16.5.0",
+    "redux": "^4.0.1"
   }
 }

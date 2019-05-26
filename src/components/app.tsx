@@ -1,92 +1,78 @@
-import { throttle } from "lodash";
-
-import Game from "./game";
+import { GameView } from "./game-view";
 
 import * as React from "react";
 
-import { Task } from "./task-generator";
-import { ProgressBar } from "./progress-bar";
+declare global {
+  interface Window {
+    a: any;
+  }
+}
 
 export class App extends React.Component {
-  game: Game;
-
   state: {
-    score: number;
-    timeLeft: number;
-    task: Task;
-    inGame: boolean;
+    isLoggedIn: boolean;
   };
+  nameInput: HTMLInputElement;
+  passInput: HTMLInputElement;
 
   constructor(props) {
     super(props);
 
-    this.game = new Game(
-      this.toggleScreen.bind(this),
-      this.updateContent.bind(this)
-    );
-    const { timeLeft, score, task } = this.game;
-    this.state = { timeLeft, score, task, inGame: false };
+    this.state = {
+      isLoggedIn: false
+    };
+  }
 
-    document.addEventListener("keyup", e => {
-      if (e.key === "ArrowRight") {
-        this.game.checkTask(false);
-      }
-      if (e.key === "ArrowLeft") {
-        this.game.checkTask(true);
+  componentDidMount() {
+    this.nameInput = document.querySelector("#name");
+    this.passInput = document.querySelector("#pass");
+  }
+
+  signIn(e) {
+    this.checkUser().then(result => {
+      console.log(result);
+      if (result !== undefined) {
+        this.setState({ isLoggedIn: true });
       }
     });
+    e.preventDefault();
   }
 
-  toggleScreen(inGame) {
-    this.setState({ inGame });
-  }
+  async checkUser() {
+    await function() {
+      let users = fetch("/users");
 
-  updateContent(game: Game) {
-    const { timeLeft, score, task } = game;
-    this.setState({ timeLeft, score, task });
+      return users
+        .then(data => data.json())
+        .then(data => {
+          console.log(this.nameInput.value);
+          return data.find(user => {
+            return (
+              user.name === this.nameInput.value &&
+              user.pass === this.passInput.value
+            );
+          });
+        });
+    };
   }
 
   render() {
-    if (this.state.inGame) {
+    if (!this.state.isLoggedIn) {
       return (
-        <div className="game-field in-game">
-          <div className="score-text">
-            Score: <span className="score">{this.state.score}</span>
-          </div>
-          <div className="formula">{this.state.task.formula}</div>
-
-          <ProgressBar value={this.state.timeLeft} />
-
-          <div className="buttons">
-            <button
-              className="correct"
-              onClick={() => this.game.checkTask(true)}
-            >
-              yes
-            </button>
-            <button
-              className="wrong"
-              onClick={() => this.game.checkTask(false)}
-            >
-              no
-            </button>
-          </div>
+        <div className="game-field">
+          <h1>Math Battle!</h1>
+          <h2>Please Sign In.</h2>
+          <form action="">
+            <label htmlFor="">Name</label>
+            <input id="name" type="text" />
+            <label htmlFor="">Password</label>
+            <input id="pass" type="password" />
+            <input type="submit" value="Submit" onClick={e => this.signIn(e)} />
+          </form>
         </div>
       );
     } else {
-      return (
-        <div className="game-field in-start">
-          <div className="score-text">
-            Score: <span className="score">{this.state.score}</span>
-          </div>
-          <h1>Math Battle!</h1>
-          <div className="buttons buttons--start">
-            <button className="start" onClick={() => this.game.start()}>
-              start
-            </button>
-          </div>
-        </div>
-      );
+      return <GameView />;
     }
   }
 }

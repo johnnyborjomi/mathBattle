@@ -8,6 +8,17 @@ body {
   font-family: Gamija, "Gamja Flower", cursive, Arial, Helvetica, sans-serif;
   background: gainsboro; }
 
+label,
+input {
+  font-size: 20px;
+  display: block;
+  padding: 4px; }
+
+input {
+  border: 1px solid gray;
+  border-radius: 5px;
+  line-height: 1.5; }
+
 .game-field {
   overflow-x: hidden;
   display: flex;
