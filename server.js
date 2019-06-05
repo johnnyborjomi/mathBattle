@@ -21,16 +21,19 @@ app
   })
   .post("/login", (req, res) => {
     let reqString = "";
+    console.log(req.body);
     req.on("data", data => {
-      reqString += data;
+      reqString += data.toString("utf8");
       console.log(reqString);
     });
 
-    if (checkUserLogin(JSON.parse(reqString))) {
-      res.send(true);
-    } else {
-      res.send(false);
-    }
+    req.on("end", () => {
+      if (checkUserLogin(JSON.parse(reqString))) {
+        res.send(true);
+      } else {
+        res.send(false);
+      }
+    });
   });
 
 app.listen(port, () => console.log(`App running on port:${port}`));
