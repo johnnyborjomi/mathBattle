@@ -9,11 +9,12 @@ declare global {
 }
 
 export class App extends React.Component {
+  nameInput: any;
+  passInput: any;
+
   state: {
     isLoggedIn: boolean;
   };
-  nameInput: HTMLInputElement;
-  passInput: HTMLInputElement;
 
   constructor(props) {
     super(props);
@@ -21,35 +22,41 @@ export class App extends React.Component {
     this.state = {
       isLoggedIn: false
     };
-  }
-
-  componentDidMount() {
-    this.nameInput = document.querySelector("#name");
-    this.passInput = document.querySelector("#pass");
+    this.nameInput = React.createRef();
+    this.passInput = React.createRef();
   }
 
   signIn(e) {
-    this.checkUser();
     e.preventDefault();
+
+    let nameValue;
+    this.checkUser();
+    console.log(e);
   }
 
-  checkUser() {
-    let users = fetch("/users");
-    users
-      .then(data => data.json())
-      .then(data => {
-        console.log(this.nameInput.value);
-        let user = data.find(user => {
-          return (
-            user.name === this.nameInput.value &&
-            user.pass === this.passInput.value
-          );
-        });
-        if (user) {
-          console.log(user);
-          this.setState({ isLoggedIn: true });
-        }
-      });
+  async checkUser() {
+    let users = await fetch("/login", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: this.nameInput.current.value,
+        pass: this.passInput.current.value
+      })
+    }).then(data => data.json());
+
+    let user = users.find(user => {
+      return (
+        user.name === this.nameInput.current.value &&
+        user.pass === this.passInput.current.value
+      );
+    });
+    if (user) {
+      console.log(user);
+      this.setState({ isLoggedIn: true });
+    }
   }
 
   render() {
@@ -57,13 +64,16 @@ export class App extends React.Component {
       return (
         <div className="game-field">
           <h1>Math Battle!</h1>
-          <h2>Please Sign In.</h2>
-          <form action="">
+          <h2>
+            Please Sign In or <a href="#">Sign Up.</a>
+          </h2>
+
+          <form name="login-form" onSubmit={e => this.signIn(e)}>
             <label htmlFor="">Name</label>
-            <input id="name" type="text" />
+            <input id="name" type="text" ref={this.nameInput} />
             <label htmlFor="">Password</label>
-            <input id="pass" type="password" />
-            <input type="submit" value="Submit" onClick={e => this.signIn(e)} />
+            <input id="pass" type="password" ref={this.passInput} />
+            <input className="button-submit" type="submit" value="Submit" />
           </form>
         </div>
       );

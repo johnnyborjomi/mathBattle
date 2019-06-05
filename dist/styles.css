@@ -8,6 +8,9 @@ body {
   font-family: Gamija, "Gamja Flower", cursive, Arial, Helvetica, sans-serif;
   background: gainsboro; }
 
+a {
+  color: inherit; }
+
 label,
 input {
   font-size: 20px;
@@ -90,5 +93,10 @@ h1 {
 
 .hidden {
   display: none; }
+
+.button-submit {
+  display: block;
+  margin: 15px 0;
+  width: 100%; }
 
 /*# sourceMappingURL=styles.css.map*/

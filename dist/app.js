@@ -38264,6 +38264,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _game_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game-view */ "./src/components/game-view.tsx");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 
 
 class App extends react__WEBPACK_IMPORTED_MODULE_1__["Component"] {
@@ -38272,24 +38280,31 @@ class App extends react__WEBPACK_IMPORTED_MODULE_1__["Component"] {
         this.state = {
             isLoggedIn: false
         };
-    }
-    componentDidMount() {
-        this.nameInput = document.querySelector("#name");
-        this.passInput = document.querySelector("#pass");
+        this.nameInput = react__WEBPACK_IMPORTED_MODULE_1__["createRef"]();
+        this.passInput = react__WEBPACK_IMPORTED_MODULE_1__["createRef"]();
     }
     signIn(e) {
-        this.checkUser();
         e.preventDefault();
+        let nameValue;
+        this.checkUser();
+        console.log(e);
     }
     checkUser() {
-        let users = fetch("/users");
-        users
-            .then(data => data.json())
-            .then(data => {
-            console.log(this.nameInput.value);
-            let user = data.find(user => {
-                return (user.name === this.nameInput.value &&
-                    user.pass === this.passInput.value);
+        return __awaiter(this, void 0, void 0, function* () {
+            let users = yield fetch("/login", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: this.nameInput.current.value,
+                    pass: this.passInput.current.value
+                })
+            }).then(data => data.json());
+            let user = users.find(user => {
+                return (user.name === this.nameInput.current.value &&
+                    user.pass === this.passInput.current.value);
             });
             if (user) {
                 console.log(user);
@@ -38301,13 +38316,15 @@ class App extends react__WEBPACK_IMPORTED_MODULE_1__["Component"] {
         if (!this.state.isLoggedIn) {
             return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "game-field" },
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("h1", null, "Math Battle!"),
-                react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("h2", null, "Please Sign In."),
-                react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("form", { action: "" },
+                react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("h2", null,
+                    "Please Sign In or ",
+                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("a", { href: "#" }, "Sign Up.")),
+                react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("form", { name: "login-form", onSubmit: e => this.signIn(e) },
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("label", { htmlFor: "" }, "Name"),
-                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("input", { id: "name", type: "text" }),
+                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("input", { id: "name", type: "text", ref: this.nameInput }),
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("label", { htmlFor: "" }, "Password"),
-                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("input", { id: "pass", type: "password" }),
-                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("input", { type: "submit", value: "Submit", onClick: e => this.signIn(e) }))));
+                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("input", { id: "pass", type: "password", ref: this.passInput }),
+                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("input", { className: "button-submit", type: "submit", value: "Submit" }))));
         }
         else {
             return react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_game_view__WEBPACK_IMPORTED_MODULE_0__["GameView"], null);
