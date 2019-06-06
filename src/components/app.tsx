@@ -1,6 +1,7 @@
 import { GameView } from "./game-view";
 
 import * as React from "react";
+import { LoginForm } from "./login-form";
 
 declare global {
   interface Window {
@@ -9,56 +10,47 @@ declare global {
 }
 
 export class App extends React.Component {
-  nameInput: any;
-  passInput: any;
-
   state: {
     isLoggedIn: boolean;
   };
 
   constructor(props) {
     super(props);
-
+    this.signIn = this.signIn.bind(this);
     this.state = {
-      isLoggedIn: false
+      isLoggedIn: Boolean(window.sessionStorage.getItem("isLogged"))
     };
-    this.nameInput = React.createRef();
-    this.passInput = React.createRef();
   }
-
-  signIn(e) {
+  async signIn(e, userName, userPass) {
+    console.log(this);
     e.preventDefault();
-
-    let nameValue;
-    this.checkUser();
-    console.log(e);
+    (await this.checkUserAuth(userName, userPass))
+      ? this.authSuccess()
+      : this.authFailed();
   }
 
-  async checkUser() {
-    let users = await fetch("/login", {
+  async checkUserAuth(userName, userPass) {
+    return await fetch("/login", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        name: this.nameInput.current.value,
-        pass: this.passInput.current.value
+        name: userName,
+        pass: userPass
       })
     }).then(data => data.json());
-
-    let user = users.find(user => {
-      return (
-        user.name === this.nameInput.current.value &&
-        user.pass === this.passInput.current.value
-      );
-    });
-    if (user) {
-      console.log(user);
-      this.setState({ isLoggedIn: true });
-    }
   }
 
+  authSuccess() {
+    this.setState({ isLoggedIn: true });
+    // window.sessionStorage.setItem("isLogged", "true");
+  }
+
+  authFailed() {
+    console.log("auth failed");
+  }
   render() {
     if (!this.state.isLoggedIn) {
       return (
@@ -67,14 +59,7 @@ export class App extends React.Component {
           <h2>
             Please Sign In or <a href="#">Sign Up.</a>
           </h2>
-
-          <form name="login-form" onSubmit={e => this.signIn(e)}>
-            <label htmlFor="">Name</label>
-            <input id="name" type="text" ref={this.nameInput} />
-            <label htmlFor="">Password</label>
-            <input id="pass" type="password" ref={this.passInput} />
-            <input className="button-submit" type="submit" value="Submit" />
-          </form>
+          <LoginForm onSignIn={this.signIn} />;
         </div>
       );
     } else {

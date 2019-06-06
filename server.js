@@ -15,26 +15,19 @@ app.use(express.static("dist"));
 app.get("/", (req, res) => {
   res.send("run");
 });
-app
-  .get("/users", (req, res) => {
-    res.send(JSON.stringify(getUsers()));
-  })
-  .post("/login", (req, res) => {
-    let reqString = "";
-    console.log(req.body);
-    req.on("data", data => {
-      reqString += data.toString("utf8");
-      console.log(reqString);
-    });
+app.get("/users", (req, res) => {
+  res.send(JSON.stringify(getUsers()));
+});
 
-    req.on("end", () => {
-      if (checkUserLogin(JSON.parse(reqString))) {
-        res.send(true);
-      } else {
-        res.send(false);
-      }
-    });
-  });
+app.use(express.json());
+
+app.post("/login", (req, res) => {
+  if (checkUserLogin(req.body)) {
+    res.send(true);
+  } else {
+    res.send(false);
+  }
+});
 
 app.listen(port, () => console.log(`App running on port:${port}`));
 
