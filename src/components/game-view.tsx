@@ -3,7 +3,9 @@ import Game from "./game";
 import { Task } from "./task-generator";
 import { ProgressBar } from "./progress-bar";
 
-export class GameView extends React.Component {
+type Props = { playerName: string };
+
+export class GameView extends React.Component<Props> {
   game: Game;
 
   state: {
@@ -45,6 +47,7 @@ export class GameView extends React.Component {
     if (this.state.inGame) {
       return (
         <div className="game-field in-game">
+          <div className="player-name">Player: {this.props.playerName}</div>
           <div className="score-text">
             Score: <span className="score">{this.state.score}</span>
           </div>
@@ -71,6 +74,7 @@ export class GameView extends React.Component {
     } else {
       return (
         <div className="game-field in-start">
+          <div className="player-name">Player: {this.props.playerName}</div>
           <div className="score-text">
             Score: <span className="score">{this.state.score}</span>
           </div>

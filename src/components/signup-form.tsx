@@ -1,7 +1,6 @@
 import * as React from "react";
 type Props = { onSignIn: any; failMess: string };
-
-export class LoginForm extends React.Component<Props> {
+export class SignUpForm extends React.Component<Props> {
   nameInput: any;
   passInput: any;
 
@@ -23,13 +22,15 @@ export class LoginForm extends React.Component<Props> {
         }
       >
         <label htmlFor="">Name</label>
-        <input id="loginName" type="text" ref={this.nameInput} min="3" />
+        <input id="name" type="text" ref={this.nameInput} min="3" />
         <label htmlFor="">Password</label>
-        <input id="loginPass" type="password" ref={this.passInput} min="5" />
+        <input id="pass" type="password" ref={this.passInput} min="5" />
         <label className="message-alert">
-          {this.props.failMess === "login" ? "Invalid login or password!" : ""}
+          {this.props.failMess === "signup"
+            ? "User with this name already exist!"
+            : ""}
         </label>
-        <input className="button-submit" type="submit" value="Login" />
+        <input className="button-submit" type="submit" value="Sign Up" />
       </form>
     );
   }

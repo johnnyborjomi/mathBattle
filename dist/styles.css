@@ -2,6 +2,9 @@
   font-family: Gamija;
   src: url("/assets/GamjaFlower-Regular.ttf"); }
 
+* {
+  box-sizing: border-box; }
+
 body {
   margin: 0;
   padding: 0;
@@ -15,7 +18,8 @@ label,
 input {
   font-size: 20px;
   display: block;
-  padding: 4px; }
+  padding: 4px;
+  width: 100%; }
 
 input {
   border: 1px solid gray;
@@ -98,5 +102,14 @@ h1 {
   display: block;
   margin: 15px 0;
   width: 100%; }
+
+.hidden {
+  display: none; }
+
+.message-alert {
+  color: darkred; }
+
+.toggler-target a {
+  color: green; }
 
 /*# sourceMappingURL=styles.css.map*/

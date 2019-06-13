@@ -38265,6 +38265,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _login_form__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./login-form */ "./src/components/login-form.tsx");
+/* harmony import */ var _signup_form__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./signup-form */ "./src/components/signup-form.tsx");
+/* harmony import */ var _authentification__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./authentification */ "./src/components/authentification.ts");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -38276,59 +38278,129 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
+
+
 class App extends react__WEBPACK_IMPORTED_MODULE_1__["Component"] {
     constructor(props) {
         super(props);
         this.signIn = this.signIn.bind(this);
+        this.signUp = this.signUp.bind(this);
+        this.toggleForms = [
+            (this.toggleForm1 = react__WEBPACK_IMPORTED_MODULE_1__["createRef"]()),
+            (this.toggleForm2 = react__WEBPACK_IMPORTED_MODULE_1__["createRef"]())
+        ];
         this.state = {
-            isLoggedIn: Boolean(window.sessionStorage.getItem("isLogged"))
+            isLoggedIn: Boolean(window.sessionStorage.getItem("isLogged")),
+            playerName: "",
+            authFailMess: ""
         };
     }
     signIn(e, userName, userPass) {
         return __awaiter(this, void 0, void 0, function* () {
+            e.preventDefault();
+            let result = yield Object(_authentification__WEBPACK_IMPORTED_MODULE_4__["checkUserAuth"])("/login", userName, userPass);
+            result.auth
+                ? this.authSuccess(result.playerName)
+                : this.authFailedMessage("login");
+        });
+    }
+    signUp(e, userName, userPass) {
+        return __awaiter(this, void 0, void 0, function* () {
             console.log(this);
             e.preventDefault();
-            (yield this.checkUserAuth(userName, userPass))
-                ? this.authSuccess()
-                : this.authFailed();
+            let result = yield Object(_authentification__WEBPACK_IMPORTED_MODULE_4__["checkUserAuth"])("/signup", userName, userPass);
+            result.auth
+                ? this.authSuccess(result.playerName)
+                : this.authFailedMessage("signup");
         });
     }
-    checkUserAuth(userName, userPass) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield fetch("/login", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name: userName,
-                    pass: userPass
-                })
-            }).then(data => data.json());
+    authSuccess(playerName) {
+        this.setState({
+            isLoggedIn: true,
+            authFailMess: "",
+            playerName: playerName
         });
-    }
-    authSuccess() {
-        this.setState({ isLoggedIn: true });
         // window.sessionStorage.setItem("isLogged", "true");
     }
-    authFailed() {
-        console.log("auth failed");
+    authFailedMessage(str) {
+        console.log(`auth failed`);
+        this.setState({ authFailMess: str });
+    }
+    toggleForm(e) {
+        e.preventDefault();
+        this.toggleForms.forEach(form => {
+            let formClass = form.current.classList;
+            formClass.contains("hidden")
+                ? formClass.remove("hidden")
+                : formClass.add("hidden");
+        });
     }
     render() {
         if (!this.state.isLoggedIn) {
             return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "game-field" },
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("h1", null, "Math Battle!"),
-                react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("h2", null,
-                    "Please Sign In or ",
-                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("a", { href: "#" }, "Sign Up.")),
-                react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_login_form__WEBPACK_IMPORTED_MODULE_2__["LoginForm"], { onSignIn: this.signIn }),
-                ";"));
+                react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "login-form toggler-target", ref: this.toggleForm1 },
+                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("h2", null,
+                        "Please Log In or",
+                        " ",
+                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("a", { href: "#", onClick: e => this.toggleForm(e) },
+                            " ",
+                            "Sign Up.",
+                            " ")),
+                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_login_form__WEBPACK_IMPORTED_MODULE_2__["LoginForm"], { onSignIn: this.signIn, failMess: this.state.authFailMess })),
+                react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "signup-form toggler-target hidden", ref: this.toggleForm2 },
+                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("h2", null,
+                        "Please",
+                        " ",
+                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("a", { href: "#", onClick: e => this.toggleForm(e) },
+                            " ",
+                            "Log In"),
+                        " ",
+                        "or Sign Up.",
+                        " "),
+                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_signup_form__WEBPACK_IMPORTED_MODULE_3__["SignUpForm"], { onSignIn: this.signUp, failMess: this.state.authFailMess }))));
         }
         else {
-            return react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_game_view__WEBPACK_IMPORTED_MODULE_0__["GameView"], null);
+            return react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_game_view__WEBPACK_IMPORTED_MODULE_0__["GameView"], { playerName: this.state.playerName });
         }
     }
+}
+
+
+/***/ }),
+
+/***/ "./src/components/authentification.ts":
+/*!********************************************!*\
+  !*** ./src/components/authentification.ts ***!
+  \********************************************/
+/*! exports provided: checkUserAuth */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkUserAuth", function() { return checkUserAuth; });
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+function checkUserAuth(url, userName, userPass) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield fetch(url, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: userName,
+                pass: userPass
+            })
+        }).then(data => data.json());
+    });
 }
 
 
@@ -38376,6 +38448,9 @@ class GameView extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     render() {
         if (this.state.inGame) {
             return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "game-field in-game" },
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "player-name" },
+                    "Player: ",
+                    this.props.playerName),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "score-text" },
                     "Score: ",
                     react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", { className: "score" }, this.state.score)),
@@ -38387,6 +38462,9 @@ class GameView extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         }
         else {
             return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "game-field in-start" },
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "player-name" },
+                    "Player: ",
+                    this.props.playerName),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "score-text" },
                     "Score: ",
                     react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", { className: "score" }, this.state.score)),
@@ -38483,18 +38561,16 @@ class LoginForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         this.nameInput = react__WEBPACK_IMPORTED_MODULE_0__["createRef"]();
         this.passInput = react__WEBPACK_IMPORTED_MODULE_0__["createRef"]();
     }
-    handleSignIn(e, name, pass) {
-        this.props.onSignIn(e, name, pass);
-    }
     render() {
         let name = this.nameInput;
         let pass = this.passInput;
-        return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("form", { name: "login-form", onSubmit: e => this.handleSignIn(e, name.current.value, pass.current.value) },
+        return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("form", { name: "login-form", onSubmit: e => this.props.onSignIn(e, name.current.value, pass.current.value) },
             react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", { htmlFor: "" }, "Name"),
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { id: "name", type: "text", ref: this.nameInput }),
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { id: "loginName", type: "text", ref: this.nameInput, min: "3" }),
             react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", { htmlFor: "" }, "Password"),
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { id: "pass", type: "password", ref: this.passInput }),
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { className: "button-submit", type: "submit", value: "Submit" })));
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { id: "loginPass", type: "password", ref: this.passInput, min: "5" }),
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", { className: "message-alert" }, this.props.failMess === "login" ? "Invalid login or password!" : ""),
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { className: "button-submit", type: "submit", value: "Login" })));
     }
 }
 
@@ -38518,6 +38594,43 @@ class ProgressBar extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     render() {
         return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "timeline" },
             react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "line", style: { width: `${this.props.value}%` } })));
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/components/signup-form.tsx":
+/*!****************************************!*\
+  !*** ./src/components/signup-form.tsx ***!
+  \****************************************/
+/*! exports provided: SignUpForm */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SignUpForm", function() { return SignUpForm; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+class SignUpForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+    constructor(props) {
+        super(props);
+        this.nameInput = react__WEBPACK_IMPORTED_MODULE_0__["createRef"]();
+        this.passInput = react__WEBPACK_IMPORTED_MODULE_0__["createRef"]();
+    }
+    render() {
+        let name = this.nameInput;
+        let pass = this.passInput;
+        return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("form", { name: "login-form", onSubmit: e => this.props.onSignIn(e, name.current.value, pass.current.value) },
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", { htmlFor: "" }, "Name"),
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { id: "name", type: "text", ref: this.nameInput, min: "3" }),
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", { htmlFor: "" }, "Password"),
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { id: "pass", type: "password", ref: this.passInput, min: "5" }),
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("label", { className: "message-alert" }, this.props.failMess === "signup"
+                ? "User with this name already exist!"
+                : ""),
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("input", { className: "button-submit", type: "submit", value: "Sign Up" })));
     }
 }
 
