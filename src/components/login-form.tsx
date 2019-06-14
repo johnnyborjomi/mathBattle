@@ -1,5 +1,5 @@
 import * as React from "react";
-type Props = { onSignIn: any; failMess: string };
+type Props = { onSignIn: any; failMess: [string, string] };
 
 export class LoginForm extends React.Component<Props> {
   nameInput: any;
@@ -27,7 +27,9 @@ export class LoginForm extends React.Component<Props> {
         <label htmlFor="">Password</label>
         <input id="loginPass" type="password" ref={this.passInput} min="5" />
         <label className="message-alert">
-          {this.props.failMess === "login" ? "Invalid login or password!" : ""}
+          {this.props.failMess[0] === "login"
+            ? "Invalid login or password!"
+            : ""}
         </label>
         <input className="button-submit" type="submit" value="Login" />
       </form>

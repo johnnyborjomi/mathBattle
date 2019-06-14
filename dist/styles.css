@@ -112,4 +112,9 @@ h1 {
 .toggler-target a {
   color: green; }
 
+.player-name {
+  position: absolute;
+  top: 5%;
+  right: 5%; }
+
 /*# sourceMappingURL=styles.css.map*/

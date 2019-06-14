@@ -17,7 +17,7 @@ export class App extends React.Component {
   toggleForms: [any, any];
   state: {
     isLoggedIn: boolean;
-    authFailMess: string;
+    authFailMess: [string, string];
     playerName: string;
   };
 
@@ -33,7 +33,7 @@ export class App extends React.Component {
     this.state = {
       isLoggedIn: Boolean(window.sessionStorage.getItem("isLogged")),
       playerName: "",
-      authFailMess: ""
+      authFailMess: ["", ""]
     };
   }
   async signIn(e, userName, userPass) {
@@ -41,16 +41,16 @@ export class App extends React.Component {
     let result = await checkUserAuth("/login", userName, userPass);
     result.auth
       ? this.authSuccess(result.playerName)
-      : this.authFailedMessage("login");
+      : this.authFailedMessage(["login", result.failMess]);
   }
 
   async signUp(e, userName, userPass) {
     console.log(this);
     e.preventDefault();
     let result = await checkUserAuth("/signup", userName, userPass);
-    result.auth
+    result.success
       ? this.authSuccess(result.playerName)
-      : this.authFailedMessage("signup");
+      : this.authFailedMessage(["signup", result.failMess]);
   }
 
   authSuccess(playerName) {
@@ -62,9 +62,11 @@ export class App extends React.Component {
     // window.sessionStorage.setItem("isLogged", "true");
   }
 
-  authFailedMessage(str) {
+  //TODO: Pass object with error text
+
+  authFailedMessage(mess) {
     console.log(`auth failed`);
-    this.setState({ authFailMess: str });
+    this.setState({ authFailMess: mess });
   }
 
   toggleForm(e) {

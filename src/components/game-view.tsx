@@ -19,7 +19,8 @@ export class GameView extends React.Component<Props> {
     super(props);
     this.game = new Game(
       this.toggleScreen.bind(this),
-      this.updateContent.bind(this)
+      this.updateContent.bind(this),
+      this.saveResult.bind(this)
     );
     const { timeLeft, score, task } = this.game;
     this.state = { timeLeft, score, task, inGame: false };
@@ -31,6 +32,17 @@ export class GameView extends React.Component<Props> {
       if (e.key === "ArrowLeft") {
         this.game.checkTask(true);
       }
+    });
+  }
+
+  async saveResult(score) {
+    await fetch("/saveScore", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ playerName: this.props.playerName, score: score })
     });
   }
 
