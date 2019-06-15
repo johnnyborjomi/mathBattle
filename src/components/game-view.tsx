@@ -2,6 +2,7 @@ import * as React from "react";
 import Game from "./game";
 import { Task } from "./task-generator";
 import { ProgressBar } from "./progress-bar";
+import { GetScoreList } from "./score-list";
 
 type Props = { playerName: string };
 
@@ -87,6 +88,7 @@ export class GameView extends React.Component<Props> {
       return (
         <div className="game-field in-start">
           <div className="player-name">Player: {this.props.playerName}</div>
+          <GetScoreList />
           <div className="score-text">
             Score: <span className="score">{this.state.score}</span>
           </div>

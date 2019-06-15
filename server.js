@@ -7,12 +7,16 @@ const app = express();
 
 app.use(express.static("dist"));
 
-app.get("/", (req, res) => {
-  res.send("run");
-});
-app.get("/users", (req, res) => {
-  res.send(JSON.stringify(getUsers()));
-});
+app
+  .get("/", (req, res) => {
+    res.send("run");
+  })
+  .get("/getScore", (req, res) => {
+    let users = getUsers();
+    let scores = JSON.stringify(sortedByScoreUsers(users));
+
+    res.end(scores);
+  });
 
 app.use(express.json());
 
@@ -102,4 +106,15 @@ function registerUser(user) {
   usersArr.push(user);
   console.log(usersArr);
   writeUsers(usersArr);
+}
+
+function sortedByScoreUsers(users) {
+  return users
+    .sort((a, b) => {
+      return b.score - a.score;
+    })
+    .map(user => {
+      delete user.pass;
+      return user;
+    });
 }

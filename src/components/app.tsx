@@ -62,8 +62,6 @@ export class App extends React.Component {
     // window.sessionStorage.setItem("isLogged", "true");
   }
 
-  //TODO: Pass object with error text
-
   authFailedMessage(mess) {
     console.log(`auth failed`);
     this.setState({ authFailMess: mess });
