@@ -5,18 +5,17 @@ const express = require("express");
 
 const app = express();
 
+const TOP_SCORE_LENGTH = 5;
+
 app.use(express.static("dist"));
 
-app
-  .get("/", (req, res) => {
-    res.send("run");
-  })
-  .get("/getScore", (req, res) => {
-    let users = getUsers();
-    let scores = JSON.stringify(sortedByScoreUsers(users));
-
-    res.end(scores);
-  });
+app.get("/getScore", (req, res) => {
+  let users = getUsers();
+  let sortedUsers = sortUsersByScore(users);
+  let passLessUsers = cleanUsersPassewords(sortedUsers);
+  let topScores = getTopScores(passLessUsers);
+  res.json(topScores);
+});
 
 app.use(express.json());
 
@@ -29,14 +28,14 @@ app
         playerName: user.name
       };
       res.send(JSON.stringify(userInfo));
+    } else {
+      res.send({ auth: false });
     }
-    res.send({ auth: false });
   })
   .post("/signup", (req, res) => {
     let result = checkUserSignUp(req.body);
     if (result.success) {
       registerUser(req.body);
-      console.log(req.body);
       res.send(JSON.stringify({ success: true, playerName: req.body.name }));
     } else {
       res.send(JSON.stringify(result));
@@ -46,8 +45,11 @@ app
     let users = getUsers();
     let userIndex = findUserIndexByName(req.body.playerName);
     users[userIndex].score = req.body.score;
-    writeUsers(users);
-    res.send("score saved");
+    let sortedUsers = sortUsersByScore(users);
+    writeUsers(sortedUsers);
+    let passLessUsers = cleanUsersPassewords(sortedUsers);
+    let topScores = getTopScores(passLessUsers);
+    res.json(topScores);
   });
 
 app.listen(port, () => console.log(`App running on port:${port}`));
@@ -103,18 +105,27 @@ function checkUserSignUp(currentUser) {
 
 function registerUser(user) {
   let usersArr = getUsers();
+  if (!user.score) user.score = 0;
   usersArr.push(user);
-  console.log(usersArr);
   writeUsers(usersArr);
 }
 
-function sortedByScoreUsers(users) {
-  return users
-    .sort((a, b) => {
-      return b.score - a.score;
-    })
-    .map(user => {
-      delete user.pass;
-      return user;
-    });
+function sortUsersByScore(users) {
+  return users.sort((a, b) => {
+    return b.score - a.score;
+  });
+}
+
+function cleanUsersPassewords(users) {
+  return users.map(user => {
+    delete user.pass;
+    return user;
+  });
+}
+
+function getTopScores(scoreArr) {
+  if (scoreArr.length > TOP_SCORE_LENGTH) {
+    scoreArr.splice(TOP_SCORE_LENGTH);
+  }
+  return scoreArr;
 }

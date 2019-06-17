@@ -21,6 +21,13 @@ a {
   color: inherit;
 }
 
+ul,
+li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 label,
 input {
   font-size: 20px;
@@ -142,4 +149,12 @@ h1 {
   position: absolute;
   top: 5%;
   right: 5%;
+}
+
+.score-list {
+  font-size: 25px;
+  text-align: center;
+  h2 {
+    margin: 0;
+  }
 }

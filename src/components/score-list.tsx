@@ -1,37 +1,36 @@
 import * as React from "react";
 import { func } from "prop-types";
 
-function ScoreList(props) {
-  let score = props.score.map((scoreItem: { name: string; score: number }) => {
-    <li>
-      <span>{scoreItem.name}</span>
-      <span>{scoreItem.score}</span>
-    </li>;
-  });
-  return <ul>{score}</ul>;
+function ScoreList(score) {
+  let scoreList = score.score.map(
+    (scoreItem: { name: string; score: number }, i) => (
+      <li key={i}>
+        <span>{i + 1}. </span>
+        <span>{scoreItem.name} : </span>
+        <span>{scoreItem.score}</span>
+      </li>
+    )
+  );
+  return <ul>{scoreList}</ul>;
 }
 
 export class GetScoreList extends React.Component {
-  score: [];
   state: {
-    score: [{ name: string; score: string }];
+    score: [];
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      score: [{ name: "", score: "" }]
+      score: []
     };
   }
 
   async getScores() {
-    let scores = await fetch("/getScore").then(data => data.json());
-    this.setScores(scores);
+    let score = await fetch("/getScore").then(data => data.json());
+    this.setState({ score });
   }
 
-  setScores(scores) {
-    this.setState({ score: scores });
-  }
   //get data and set state before render
   componentWillMount() {
     this.getScores();
@@ -40,8 +39,8 @@ export class GetScoreList extends React.Component {
   render() {
     return (
       <div className="score-list">
+        <h2>Scores</h2>
         <ScoreList score={this.state.score} />
-        {/* {this.state.score.map(item => item.score)} */}
       </div>
     );
   }

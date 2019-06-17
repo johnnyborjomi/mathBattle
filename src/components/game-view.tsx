@@ -88,11 +88,8 @@ export class GameView extends React.Component<Props> {
       return (
         <div className="game-field in-start">
           <div className="player-name">Player: {this.props.playerName}</div>
-          <GetScoreList />
-          <div className="score-text">
-            Score: <span className="score">{this.state.score}</span>
-          </div>
           <h1>Math Battle!</h1>
+          <GetScoreList />
           <div className="buttons buttons--start">
             <button className="start" onClick={() => this.game.start()}>
               start

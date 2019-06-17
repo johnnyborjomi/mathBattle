@@ -1,8 +1,9 @@
-import { taskGenerator } from './task-generator';
+import { taskGenerator } from "./task-generator";
 export default class Game {
-    constructor(toggleScreen, updateContent) {
+    constructor(toggleScreen, updateContent, saveResult) {
         this.toggleScreen = toggleScreen;
         this.updateContent = updateContent;
+        this.saveResult = saveResult;
         this.score = 0;
         this.timeLeft = 100;
         this.gameState = false;
@@ -21,6 +22,7 @@ export default class Game {
         this.toggleScreen(false);
         this.timeLeft = 100;
         clearInterval(this.timer);
+        this.saveResult(this.score);
         this.updateContent(this);
     }
     checkTask(isCorrect) {

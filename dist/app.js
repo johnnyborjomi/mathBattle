@@ -38487,11 +38487,8 @@ class GameView extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "player-name" },
                     "Player: ",
                     this.props.playerName),
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_score_list__WEBPACK_IMPORTED_MODULE_3__["GetScoreList"], null),
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "score-text" },
-                    "Score: ",
-                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", { className: "score" }, this.state.score)),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("h1", null, "Math Battle!"),
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_score_list__WEBPACK_IMPORTED_MODULE_3__["GetScoreList"], null),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "buttons buttons--start" },
                     react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("button", { className: "start", onClick: () => this.game.start() }, "start"))));
         }
@@ -38648,29 +38645,29 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
     });
 };
 
-function ScoreList(props) {
-    let score = props.score.map((scoreItem) => {
-        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("li", null,
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", null, scoreItem.name),
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", null, scoreItem.score));
-    });
-    return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("ul", null, score);
+function ScoreList(score) {
+    let scoreList = score.score.map((scoreItem, i) => (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("li", { key: i },
+        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", null,
+            i + 1,
+            ". "),
+        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", null,
+            scoreItem.name,
+            " : "),
+        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", null, scoreItem.score))));
+    return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("ul", null, scoreList);
 }
 class GetScoreList extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
         this.state = {
-            score: [{ name: "", score: "" }]
+            score: []
         };
     }
     getScores() {
         return __awaiter(this, void 0, void 0, function* () {
-            let scores = yield fetch("/getScore").then(data => data.json());
-            this.setScores(scores);
+            let score = yield fetch("/getScore").then(data => data.json());
+            this.setState({ score });
         });
-    }
-    setScores(scores) {
-        this.setState({ score: scores });
     }
     //get data and set state before render
     componentWillMount() {
@@ -38678,6 +38675,7 @@ class GetScoreList extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }
     render() {
         return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "score-list" },
+            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("h2", null, "Scores"),
             react__WEBPACK_IMPORTED_MODULE_0__["createElement"](ScoreList, { score: this.state.score })));
     }
 }
