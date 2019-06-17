@@ -1,14 +1,14 @@
 import { Task, taskGenerator } from "./task-generator";
 
 export default class Game {
-  score: number;
+  lastScore: number;
   timeLeft: number;
   gameState: boolean;
   timer: number;
   task: Task;
 
   constructor(public toggleScreen, public updateContent, public saveResult) {
-    this.score = 0;
+    this.lastScore = 0;
 
     this.timeLeft = 100;
 
@@ -18,7 +18,7 @@ export default class Game {
   start() {
     if (this.gameState) return;
     this.toggleScreen(true);
-    this.score = 0;
+    this.lastScore = 0;
     this.nextTask();
     this.gameState = true;
     this.timer = window.setInterval(() => this.changeTime(-0.5), 100);
@@ -29,13 +29,13 @@ export default class Game {
     this.toggleScreen(false);
     this.timeLeft = 100;
     clearInterval(this.timer);
-    this.saveResult(this.score);
+    this.saveResult(this.lastScore);
     this.updateContent(this);
   }
 
   checkTask(isCorrect) {
     if (this.task.taskState === isCorrect) {
-      this.score++;
+      this.lastScore++;
       this.changeTime(10);
     } else {
       this.changeTime(-20);

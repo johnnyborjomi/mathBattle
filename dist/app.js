@@ -38437,8 +38437,8 @@ class GameView extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     constructor(props) {
         super(props);
         this.game = new _game__WEBPACK_IMPORTED_MODULE_1__["default"](this.toggleScreen.bind(this), this.updateContent.bind(this), this.saveResult.bind(this));
-        const { timeLeft, score, task } = this.game;
-        this.state = { timeLeft, score, task, inGame: false };
+        const { timeLeft, lastScore, task } = this.game;
+        this.state = { timeLeft, lastScore, task, inGame: false, scores: [] };
         document.addEventListener("keyup", e => {
             if (e.key === "ArrowRight") {
                 this.game.checkTask(false);
@@ -38450,22 +38450,33 @@ class GameView extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }
     saveResult(score) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield fetch("/saveScore", {
+            let scores = yield fetch("/saveScore", {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ playerName: this.props.playerName, score: score })
-            });
+            }).then(data => data.json());
+            this.setState({ scores });
         });
+    }
+    getScores() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let scores = yield fetch("/getScore").then(data => data.json());
+            this.setState({ scores });
+        });
+    }
+    //get data and set state before render
+    componentWillMount() {
+        this.getScores();
     }
     toggleScreen(inGame) {
         this.setState({ inGame });
     }
     updateContent(game) {
-        const { timeLeft, score, task } = game;
-        this.setState({ timeLeft, score, task });
+        const { timeLeft, lastScore, task } = game;
+        this.setState({ timeLeft, lastScore, task });
     }
     render() {
         if (this.state.inGame) {
@@ -38475,7 +38486,7 @@ class GameView extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                     this.props.playerName),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "score-text" },
                     "Score: ",
-                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", { className: "score" }, this.state.score)),
+                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", { className: "score" }, this.state.lastScore)),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "formula" }, this.state.task.formula),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_progress_bar__WEBPACK_IMPORTED_MODULE_2__["ProgressBar"], { value: this.state.timeLeft }),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "buttons" },
@@ -38488,7 +38499,11 @@ class GameView extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
                     "Player: ",
                     this.props.playerName),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("h1", null, "Math Battle!"),
-                react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_score_list__WEBPACK_IMPORTED_MODULE_3__["GetScoreList"], null),
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "score-text" },
+                    "Your Last Score:",
+                    " ",
+                    react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", { className: "score" }, this.state.lastScore)),
+                react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_score_list__WEBPACK_IMPORTED_MODULE_3__["ScoreList"], { score: this.state.scores }),
                 react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "buttons buttons--start" },
                     react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("button", { className: "start", onClick: () => this.game.start() }, "start"))));
         }
@@ -38515,7 +38530,7 @@ class Game {
         this.toggleScreen = toggleScreen;
         this.updateContent = updateContent;
         this.saveResult = saveResult;
-        this.score = 0;
+        this.lastScore = 0;
         this.timeLeft = 100;
         this.gameState = false;
     }
@@ -38523,7 +38538,7 @@ class Game {
         if (this.gameState)
             return;
         this.toggleScreen(true);
-        this.score = 0;
+        this.lastScore = 0;
         this.nextTask();
         this.gameState = true;
         this.timer = window.setInterval(() => this.changeTime(-0.5), 100);
@@ -38533,12 +38548,12 @@ class Game {
         this.toggleScreen(false);
         this.timeLeft = 100;
         clearInterval(this.timer);
-        this.saveResult(this.score);
+        this.saveResult(this.lastScore);
         this.updateContent(this);
     }
     checkTask(isCorrect) {
         if (this.task.taskState === isCorrect) {
-            this.score++;
+            this.lastScore++;
             this.changeTime(10);
         }
         else {
@@ -38628,25 +38643,17 @@ class ProgressBar extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 /*!***************************************!*\
   !*** ./src/components/score-list.tsx ***!
   \***************************************/
-/*! exports provided: GetScoreList */
+/*! exports provided: ScoreList */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GetScoreList", function() { return GetScoreList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScoreList", function() { return ScoreList; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 
-function ScoreList(score) {
-    let scoreList = score.score.map((scoreItem, i) => (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("li", { key: i },
+function ScoreList(props) {
+    let scoreList = props.score.map((scoreItem, i) => (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("li", { key: i },
         react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", null,
             i + 1,
             ". "),
@@ -38654,30 +38661,9 @@ function ScoreList(score) {
             scoreItem.name,
             " : "),
         react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", null, scoreItem.score))));
-    return react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("ul", null, scoreList);
-}
-class GetScoreList extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
-    constructor(props) {
-        super(props);
-        this.state = {
-            score: []
-        };
-    }
-    getScores() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let score = yield fetch("/getScore").then(data => data.json());
-            this.setState({ score });
-        });
-    }
-    //get data and set state before render
-    componentWillMount() {
-        this.getScores();
-    }
-    render() {
-        return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "score-list" },
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("h2", null, "Scores"),
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"](ScoreList, { score: this.state.score })));
-    }
+    return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "score-list" },
+        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("h2", null, "Scores"),
+        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("ul", null, scoreList)));
 }
 
 

@@ -12,7 +12,7 @@ app.use(express.static("dist"));
 app.get("/getScore", (req, res) => {
   let users = getUsers();
   let sortedUsers = sortUsersByScore(users);
-  let passLessUsers = cleanUsersPassewords(sortedUsers);
+  let passLessUsers = cleanUsersPasswords(sortedUsers);
   let topScores = getTopScores(passLessUsers);
   res.json(topScores);
 });
@@ -44,10 +44,12 @@ app
   .post("/saveScore", (req, res) => {
     let users = getUsers();
     let userIndex = findUserIndexByName(req.body.playerName);
-    users[userIndex].score = req.body.score;
-    let sortedUsers = sortUsersByScore(users);
-    writeUsers(sortedUsers);
-    let passLessUsers = cleanUsersPassewords(sortedUsers);
+    if (users[userIndex].score < req.body.score) {
+      users[userIndex].score = req.body.score;
+      users = sortUsersByScore(users);
+      writeUsers(users);
+    }
+    let passLessUsers = cleanUsersPasswords(users);
     let topScores = getTopScores(passLessUsers);
     res.json(topScores);
   });
@@ -116,7 +118,7 @@ function sortUsersByScore(users) {
   });
 }
 
-function cleanUsersPassewords(users) {
+function cleanUsersPasswords(users) {
   return users.map(user => {
     delete user.pass;
     return user;

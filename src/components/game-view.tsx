@@ -2,7 +2,7 @@ import * as React from "react";
 import Game from "./game";
 import { Task } from "./task-generator";
 import { ProgressBar } from "./progress-bar";
-import { GetScoreList } from "./score-list";
+import { ScoreList } from "./score-list";
 
 type Props = { playerName: string };
 
@@ -10,7 +10,8 @@ export class GameView extends React.Component<Props> {
   game: Game;
 
   state: {
-    score: number;
+    lastScore: number;
+    scores: [];
     timeLeft: number;
     task: Task;
     inGame: boolean;
@@ -23,8 +24,8 @@ export class GameView extends React.Component<Props> {
       this.updateContent.bind(this),
       this.saveResult.bind(this)
     );
-    const { timeLeft, score, task } = this.game;
-    this.state = { timeLeft, score, task, inGame: false };
+    const { timeLeft, lastScore, task } = this.game;
+    this.state = { timeLeft, lastScore, task, inGame: false, scores: [] };
 
     document.addEventListener("keyup", e => {
       if (e.key === "ArrowRight") {
@@ -37,14 +38,25 @@ export class GameView extends React.Component<Props> {
   }
 
   async saveResult(score) {
-    await fetch("/saveScore", {
+    let scores = await fetch("/saveScore", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ playerName: this.props.playerName, score: score })
-    });
+    }).then(data => data.json());
+    this.setState({ scores });
+  }
+
+  async getScores() {
+    let scores = await fetch("/getScore").then(data => data.json());
+    this.setState({ scores });
+  }
+
+  //get data and set state before render
+  componentWillMount() {
+    this.getScores();
   }
 
   toggleScreen(inGame) {
@@ -52,8 +64,8 @@ export class GameView extends React.Component<Props> {
   }
 
   updateContent(game: Game) {
-    const { timeLeft, score, task } = game;
-    this.setState({ timeLeft, score, task });
+    const { timeLeft, lastScore, task } = game;
+    this.setState({ timeLeft, lastScore, task });
   }
 
   render() {
@@ -62,7 +74,7 @@ export class GameView extends React.Component<Props> {
         <div className="game-field in-game">
           <div className="player-name">Player: {this.props.playerName}</div>
           <div className="score-text">
-            Score: <span className="score">{this.state.score}</span>
+            Score: <span className="score">{this.state.lastScore}</span>
           </div>
           <div className="formula">{this.state.task.formula}</div>
 
@@ -89,7 +101,11 @@ export class GameView extends React.Component<Props> {
         <div className="game-field in-start">
           <div className="player-name">Player: {this.props.playerName}</div>
           <h1>Math Battle!</h1>
-          <GetScoreList />
+          <div className="score-text">
+            Your Last Score:{" "}
+            <span className="score">{this.state.lastScore}</span>
+          </div>
+          <ScoreList score={this.state.scores} />
           <div className="buttons buttons--start">
             <button className="start" onClick={() => this.game.start()}>
               start
