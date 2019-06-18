@@ -2,5 +2,9 @@
 /.idea
 /.package-lock.json
 /.md
-/.DS_Store
-/users.json
+
+.vscode
+
+users.json
+.vscode/launch.json
+.DS_Store
