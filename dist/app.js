@@ -38662,7 +38662,7 @@ function ScoreList(props) {
             " : "),
         react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("span", null, scoreItem.score))));
     return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", { className: "score-list" },
-        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("h2", null, "Scores"),
+        react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("h2", null, "Top Scores"),
         react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("ul", null, scoreList)));
 }
 

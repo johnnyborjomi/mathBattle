@@ -12,7 +12,7 @@ export function ScoreList(props) {
   );
   return (
     <div className="score-list">
-      <h2>Scores</h2>
+      <h2>Top Scores</h2>
       <ul>{scoreList}</ul>
     </div>
   );
